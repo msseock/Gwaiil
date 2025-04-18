@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct GwaiilApp: App {
@@ -13,5 +14,6 @@ struct GwaiilApp: App {
         WindowGroup {
             ContentView()
         }
+        .modelContainer(for: FruitData.self)
     }
 }
