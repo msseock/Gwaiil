@@ -69,4 +69,37 @@ enum FruitType: String {
     var pieceImageName: String {
         return "piece_\(self.rawValue)"
     }
+    
+    /// 인덱스랑 색상타입으로 조각정보 얻기
+    static func getPieceByIndexNType(index: Int, type: FruitColorType) -> FruitType {
+        switch type {
+        case .yellow:
+            switch index {
+            case 0..<7:
+                return self.lemon
+            case 7..<14:
+                return self.starfruit
+            default:
+                return self.pineapple
+            }
+        case .green:
+            switch index {
+            case 0..<7:
+                return self.lime
+            case 7..<14:
+                return self.greenApple
+            default:
+                return self.melon
+            }
+        case .red:
+            switch index {
+            case 0..<7:
+                return self.cherryTomato
+            case 7..<14:
+                return self.peach
+            default:
+                return self.redApple
+            }
+        }
+    }
 }
