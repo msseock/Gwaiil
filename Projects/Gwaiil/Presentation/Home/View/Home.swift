@@ -19,13 +19,9 @@ struct Home: View {
 
     /// 진행 중인 도전
     var ongoingFruits: [FruitData] {
-        let twentyOneDaysAgo =
-            Calendar.current.date(byAdding: .day, value: -21, to: Date())
-            ?? Date()
-
         let fruits =
             allFruits
-            .filter { $0.startDate > twentyOneDaysAgo }
+            .filter { !DateUtils.isFinishedFruit(startDate: $0.startDate) }
             .sorted {
                 $0.pieces.last?.date ?? $0.startDate > $1.pieces.last?.date
                     ?? $1.startDate
@@ -36,13 +32,9 @@ struct Home: View {
 
     /// 완료한 도전
     var finishedFruits: [FruitData] {
-        let twentyOneDaysAgo =
-            Calendar.current.date(byAdding: .day, value: -21, to: Date())
-            ?? Date()
-
         let fruits =
             allFruits
-            .filter { $0.startDate <= twentyOneDaysAgo }
+            .filter { DateUtils.isFinishedFruit(startDate: $0.startDate) }
             .sorted { $0.startDate > $1.startDate }
 
         return fruits

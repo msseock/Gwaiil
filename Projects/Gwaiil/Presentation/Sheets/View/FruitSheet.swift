@@ -74,8 +74,7 @@ struct FruitSheet: View {
                 
                 Spacer()
             }
-            .padding(.top, -30)
-            .padding(.horizontal)
+            .padding([.top, .horizontal])
             .background(Color(.systemGray6).ignoresSafeArea())
             // MARK: 상단바
             .toolbar {
@@ -101,6 +100,7 @@ struct FruitSheet: View {
                     }
                 }
             }
+            .navigationBarTitleDisplayMode(.inline)
             .onAppear {
                 // 수정모드일 때 기존값 입력되도록
                 if let fruit {

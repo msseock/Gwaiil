@@ -27,6 +27,11 @@ struct FruitCardView: View {
     /// 조각 추가 sheet 띄우기용
     @State var showAddPieceSheet: Bool = false
     
+    /// 오늘 추가된 조각이 있는지 확인용
+    var hasAddedPieceToday: Bool {
+        DateUtils.hasPiece(on: Date(), in: fruitData.pieces)
+    }
+    
     
     // MARK: - View
     var body: some View {
@@ -59,7 +64,7 @@ extension FruitCardView {
                 .padding(.bottom, 5)
             
             // 날짜
-            Text(getDateText())
+            Text(DateUtils.getDateComponentText(startDate: fruitData.startDate))
                 .font(.footnote)
                 .fontWeight(.light)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -78,19 +83,33 @@ extension FruitCardView {
                 Button {
                     showAddPieceSheet.toggle()
                 } label: {
-                    buttonView(type: .addPiece)
+                    buttonView(
+                        buttonType: .addPiece,
+                        colorType: fruitData.colorType
+                    )
+                    .opacity(hasAddedPieceToday ? 0.5 : 1) // 오늘 날짜에 추가된 조각이 있으면 조각 추가하기 버튼 비활성화
                 }
+                // 오늘 날짜에 추가된 조각이 있으면 조각 추가하기 버튼 비활성화
+                .disabled(hasAddedPieceToday)
                 
                 // 상세보기 버튼
                 NavigationLink {
                     DetailFruit()
                 } label: {
-                    buttonView(type: .detail)
+                    buttonView(
+                        buttonType: .detail,
+                        colorType: nil
+                    )
                 }
             }
         }
         .sheet(isPresented: $showAddPieceSheet) {
-            PieceSheet()
+            // 조각 추가 모드로 sheet 띄우기
+            PieceSheet(
+                pieceIndex: nil,
+                fruitData: fruitData
+            )
+            .presentationDetents([.height(220)])
         }
     }
     
@@ -104,7 +123,7 @@ extension FruitCardView {
                 .padding(.bottom, 5)
             
             // 날짜
-            Text(getDateText())
+            Text(DateUtils.getDateComponentText(startDate: fruitData.startDate))
                 .font(.footnote)
                 .fontWeight(.light)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -128,22 +147,30 @@ extension FruitCardView {
                 NavigationLink {
                     DetailFruit()
                 } label: {
-                    buttonView(type: .detail)
+                    buttonView(
+                        buttonType: .detail, colorType: nil
+                    )
                 }
             }
         }
     }
     
     /// 카드에서 사용되는 공통 규격 버튼 컴포넌트
-    private func buttonView(type: ButtonType) -> some View {
+    struct buttonView: View {
+        // MARK: Properties
+        /// 버튼 종류: 조각 추가하기 || 상세보기
+        let buttonType: ButtonType
+        
+        /// 버튼 종류가 조각 추가하기 버튼일 경우, 과일 색상타입에 맞춰서 버튼 스타일 변경을 위해 받아오는 변수
+        let colorType: FruitColorType?
         
         /// 버튼 배경 색상
-        let backgroundColor: Color = {
-            if type == .detail {
+        var backgroundColor: Color {
+            if buttonType == .detail {
                 return Color.yellow20
             }
             else {
-                switch self.fruitData.colorType {
+                switch colorType! {
                 case .yellow:
                     return Color.yellow20
                 case .green:
@@ -152,15 +179,15 @@ extension FruitCardView {
                     return Color.red20
                 }
             }
-        }()
+        }
                 
         /// 버튼 스트로크 색상
-        let strokeColor: Color = {
-            if type == .detail {
+        var strokeColor: Color {
+            if buttonType == .detail {
                 return Color.yellow100
             }
             else {
-                switch self.fruitData.colorType {
+                switch colorType! {
                 case .yellow:
                     return Color.yellow100
                 case .green:
@@ -169,15 +196,15 @@ extension FruitCardView {
                     return Color.red50
                 }
             }
-        }()
+        }
         
         /// 버튼 텍스트 색상
-        let textColor: Color = {
-            if type == .detail {
+        var textColor: Color {
+            if buttonType == .detail {
                 return Color.black
             }
             else {
-                switch self.fruitData.colorType {
+                switch colorType! {
                 case .yellow:
                     return Color.black
                 case .green:
@@ -186,49 +213,32 @@ extension FruitCardView {
                     return Color.red100
                 }
             }
-        }()
+        }
         
         /// 버튼 텍스트
-        let buttonText: String = type == .detail ? "상세보기" : "조각 추가하기"
-        
-        return HStack {
-            Text(buttonText)
-                .font(.subheadline)
-                .fontWeight(.bold)
-                .foregroundStyle(textColor)
-                .padding(.vertical, 14)
-                .frame(maxWidth: .infinity, alignment: .center)
-                .background(
-                    RoundedRectangle(cornerRadius: 40)
-                        .fill(backgroundColor) // 배경색
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 40)
-                                .stroke(strokeColor, lineWidth: 2)
-                        )
-                )
+        var buttonText: String {
+            buttonType == .detail ? "상세보기" : "조각 추가하기"
         }
-    }
-}
-
-// MARK: - Functions
-extension FruitCardView {
-    /// 과일 완료 여부에 따라 완료 날짜까지 포함된 날짜 텍스트 만들어주기
-    func getDateText() -> String {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "ko_KR") // 한국어 요일
-        formatter.dateFormat = "yyyy.MM.dd"
-
-        let startString = formatter.string(from: fruitData.startDate)
         
-        if isFinished {
-            // 21일 뒤 날짜 계산
-            if let endDate = Calendar.current.date(byAdding: .day, value: 21, to: fruitData.startDate) {
-                let endString = formatter.string(from: endDate)
-                return "\(startString) ~ \(endString)"
+        // MARK: View
+        var body: some View {
+            HStack {
+                Text(buttonText)
+                    .font(.subheadline)
+                    .fontWeight(.bold)
+                    .foregroundStyle(textColor)
+                    .padding(.vertical, 14)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .background(
+                        RoundedRectangle(cornerRadius: 40)
+                            .fill(backgroundColor) // 배경색
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 40)
+                                    .stroke(strokeColor, lineWidth: 2)
+                            )
+                    )
             }
         }
-        
-        return "\(startString) ~"
     }
 }
 
