@@ -12,7 +12,7 @@ import SwiftData
 struct GwaiilApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            Home()
         }
         .modelContainer(for: FruitData.self)
     }
