@@ -81,7 +81,8 @@ struct Home: View {
             }
             .background(Color(.systemGray6).ignoresSafeArea())
             .sheet(isPresented: $showAddFruitSheet) {
-                FruitSheet()
+                FruitSheet(fruit: nil)
+                    .presentationDetents([.height(500)]) // 화면 전체 말고 필요한 만큼만 올라오도록 설정
             }
         }
     }

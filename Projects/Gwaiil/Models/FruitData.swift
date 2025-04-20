@@ -44,7 +44,7 @@ enum FruitColorType: String, CaseIterable, Codable {
 }
 
 /// 과일 9종
-enum FruitType: String {
+enum FruitType: String, CaseIterable {
     // yellow
     case lemon
     case starfruit
@@ -70,36 +70,49 @@ enum FruitType: String {
         return "piece_\(self.rawValue)"
     }
     
-    /// 인덱스랑 색상타입으로 조각정보 얻기
+    /// 과일별 색상타입
+    var colorType: FruitColorType {
+        switch self {
+        case .lemon, .starfruit, .pineapple: .yellow
+        case .lime, .greenApple, .melon: .green
+        case .cherryTomato, .peach, .redApple: .red
+        }
+    }
+    
+    /// 진화단계
+    var level: Int {
+        switch self {
+        case .lemon, .lime, .cherryTomato:
+            0
+        case .starfruit, .greenApple, .peach:
+            1
+        case .pineapple, .melon, .redApple:
+            2
+        }
+    }
+    
+    /// 색상타입별 진화 단계로 과일정보 얻기
+    static func getPieceByLevelNType(level: Int, type: FruitColorType) -> FruitType {
+        return FruitType.allCases.first {
+            $0.level == level && $0.colorType == type
+        } ?? .lemon
+    }
+    
+    /// 인덱스랑 색상타입으로 과일정보 얻기
     static func getPieceByIndexNType(index: Int, type: FruitColorType) -> FruitType {
-        switch type {
-        case .yellow:
-            switch index {
-            case 0..<7:
-                return self.lemon
-            case 7..<14:
-                return self.starfruit
-            default:
-                return self.pineapple
-            }
-        case .green:
-            switch index {
-            case 0..<7:
-                return self.lime
-            case 7..<14:
-                return self.greenApple
-            default:
-                return self.melon
-            }
-        case .red:
-            switch index {
-            case 0..<7:
-                return self.cherryTomato
-            case 7..<14:
-                return self.peach
-            default:
-                return self.redApple
-            }
+        switch index {
+        case 0..<7:
+            return FruitType.allCases.first {
+                $0.level == 0 && $0.colorType == type
+            } ?? .lemon
+        case 7..<14:
+            return FruitType.allCases.first {
+                $0.level == 1 && $0.colorType == type
+            } ?? .starfruit
+        default:
+            return FruitType.allCases.first {
+                $0.level == 2 && $0.colorType == type
+            } ?? .pineapple
         }
     }
 }
