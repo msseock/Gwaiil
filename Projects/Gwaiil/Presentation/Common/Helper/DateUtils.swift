@@ -29,6 +29,12 @@ enum DateUtils {
         return start <= twentyOneDaysAgo
     }
     
+    /// 날짜가 같은 날인지 체크
+    static func isSameDay(date1: Date, date2: Date) -> Bool {
+        let calendar = Calendar.current
+        return calendar.isDate(date1, inSameDayAs: date2)
+    }
+    
     
     // MARK: - 날짜 → 텍스트 변환
     
@@ -60,14 +66,38 @@ enum DateUtils {
         return DateComponentText
     }
     
+    /// 2025년 3월 6일 17:00 형태로 Date 객체 문자열 반환
+    static func getDescriptiveText(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ko_KR")
+        formatter.dateFormat = "yyyy년 M월 d일 HH:mm"
+        return formatter.string(from: date)
+    }
+    
     
     // MARK: - 날짜 비교 / 포함 여부
     
     /// pieces 배열 안에 date와 같은 날짜를 가진 객체가 있는지 확인
     static func hasPiece(on date: Date, in pieces: [PieceData]) -> Bool {
         pieces.contains { piece in
-            let calendar = Calendar.current
-            return calendar.isDate(piece.date, inSameDayAs: date)
+            DateUtils.isSameDay(date1: piece.date, date2: date)
+        }
+    }
+    
+    /// 시작날짜로부터 21일 뒤까지 얼마나 남았는지 디데이 텍스트
+    static func getDdayText(until21DaysAfter startDate: Date) -> String {
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date()) // 오늘 00:00 기준
+        let deadline = calendar.date(byAdding: .day, value: 21, to: calendar.startOfDay(for: startDate))!
+
+        let remainingDays = calendar.dateComponents([.day], from: today, to: deadline).day!
+
+        if remainingDays > 0 {
+            return "D-\(remainingDays)"
+        } else if remainingDays == 0 {
+            return "D-DAY"
+        } else {
+            return "종료됨"
         }
     }
 }

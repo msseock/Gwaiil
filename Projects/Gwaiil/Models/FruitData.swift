@@ -31,7 +31,7 @@ class FruitData: Identifiable {
         self.id = UUID()
         self.name = name
         self.colorType = colorType
-        self.startDate = Date()
+        self.startDate = Calendar.current.startOfDay(for: Date())
         self.pieces = []
     }
 }

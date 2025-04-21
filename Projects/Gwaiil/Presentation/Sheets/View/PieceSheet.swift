@@ -32,8 +32,24 @@ struct PieceSheet: View {
     /// 수정할 수 있는 날짜인지 확인하고 경고 메시지 띄워주기
     /// - piece 배열에 저장되어 있는 날짜 중에 동일한 날짜가 있으면 수정 불가능한 날짜
     var isItOkayToChangeDate: Bool {
-        let hasPieceOnSameDay = DateUtils.hasPiece(on: selectedDate, in: fruitData.pieces)
-        return !hasPieceOnSameDay
+        // 수정모드
+        if let piece {
+            // 기존 날짜랑 같은 날짜면 오케이
+            if DateUtils.isSameDay(date1: piece.date, date2: selectedDate) {
+                return true
+            }
+            // 다른 날짜면 조각 배열에 이미 등록된 날짜 있는지 체크
+            else {
+                let hasPieceOnSameDay = DateUtils.hasPiece(on: selectedDate, in: fruitData.pieces)
+                return !hasPieceOnSameDay
+            }
+        }
+        // 생성모드
+        else {
+            // 조각 배열에 이미 등록된 날짜 있는지 체크
+            let hasPieceOnSameDay = DateUtils.hasPiece(on: selectedDate, in: fruitData.pieces)
+            return !hasPieceOnSameDay
+        }
     }
 
     /// 작성 || 수정할 활동 이름
@@ -58,8 +74,8 @@ struct PieceSheet: View {
                 )
 
                 // MARK: 경고메시지
-                // 수정하려는 날짜에 이미 기존 기록이 있으면 변경 불가능하다는 메시지 띄워주기
-                Text("이미 기록이 있는 날이라서 바꿀 수 없어요")
+                // 등록하려는 날짜에 이미 기존 기록이 있으면 변경 불가능하다는 메시지 띄워주기
+                Text("이미 기록이 있는 날이에요")
                     .font(.subheadline)
                     .foregroundStyle(Color.red100)
                     .opacity(isItOkayToChangeDate ? 0 : 1)
@@ -166,10 +182,6 @@ extension PieceSheet {
             let newPiece = PieceData(text: text, date: selectedDate)
             fruitData.pieces.append(newPiece)
         }
-    }
-
-    private func checkDateChangeable() -> Bool {
-        return false
     }
 }
 

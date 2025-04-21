@@ -94,7 +94,8 @@ extension FruitCardView {
                 
                 // 상세보기 버튼
                 NavigationLink {
-                    DetailFruit()
+                    DetailFruit(fruitID: fruitData.id)
+                        .toolbarRole(.editor)
                 } label: {
                     buttonView(
                         buttonType: .detail,
@@ -145,7 +146,8 @@ extension FruitCardView {
             // 상세보기 버튼
             if fruitData.pieces.count > 0 {
                 NavigationLink {
-                    DetailFruit()
+                    DetailFruit(fruitID: fruitData.id)
+                        .toolbarRole(.editor)
                 } label: {
                     buttonView(
                         buttonType: .detail, colorType: nil
@@ -251,5 +253,17 @@ extension FruitCardView {
             isFinished: false
         )
         .padding(.horizontal, 16)
+    }
+}
+
+
+#Preview {
+    Home()
+}
+
+
+struct Home_Previews: PreviewProvider {
+    static var previews: some View {
+        Home()
     }
 }
