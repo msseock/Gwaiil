@@ -23,8 +23,10 @@ struct Home: View {
             allFruits
             .filter { !DateUtils.isFinishedFruit(startDate: $0.startDate) }
             .sorted {
-                $0.pieces.last?.date ?? $0.startDate > $1.pieces.last?.date
-                    ?? $1.startDate
+                /// 가장 마지막에 등록된 조각 순서대로 도전과일 내림차순(조각 없으면 도전 시작날짜로 정렬)
+                let firstPiecesLatestDate = $0.pieces.sorted { $0.date > $1.date }.first?.date
+                let secondPiecesLatestDate = $1.pieces.sorted { $0.date > $1.date }.first?.date
+                return firstPiecesLatestDate ?? $0.startDate > secondPiecesLatestDate ?? $1.startDate
             }
 
         return fruits
