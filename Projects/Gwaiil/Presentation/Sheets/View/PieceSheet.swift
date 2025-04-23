@@ -29,29 +29,6 @@ struct PieceSheet: View {
         pieceIndex == nil ? "과일조각 추가" : "과일조각 수정"
     }
 
-    /// 수정할 수 있는 날짜인지 확인하고 경고 메시지 띄워주기
-    /// - piece 배열에 저장되어 있는 날짜 중에 동일한 날짜가 있으면 수정 불가능한 날짜
-    var isItOkayToChangeDate: Bool {
-        // 수정모드
-        if let piece {
-            // 기존 날짜랑 같은 날짜면 오케이
-            if DateUtils.isSameDay(date1: piece.date, date2: selectedDate) {
-                return true
-            }
-            // 다른 날짜면 조각 배열에 이미 등록된 날짜 있는지 체크
-            else {
-                let hasPieceOnSameDay = DateUtils.hasPiece(on: selectedDate, in: fruitData.pieces)
-                return !hasPieceOnSameDay
-            }
-        }
-        // 생성모드
-        else {
-            // 조각 배열에 이미 등록된 날짜 있는지 체크
-            let hasPieceOnSameDay = DateUtils.hasPiece(on: selectedDate, in: fruitData.pieces)
-            return !hasPieceOnSameDay
-        }
-    }
-
     /// 작성 || 수정할 활동 이름
     @State private var text: String = ""
     /// 작성 || 수정할 활동 날짜
@@ -78,9 +55,9 @@ struct PieceSheet: View {
                 Text("이미 기록이 있는 날이에요")
                     .font(.subheadline)
                     .foregroundStyle(Color.red100)
-                    .opacity(isItOkayToChangeDate ? 0 : 1)
+                    .opacity(isItOkayToChangeDate() ? 0 : 1)
                     .frame(maxWidth: .infinity, alignment: .trailing)
-                    .animation(.easeInOut, value: isItOkayToChangeDate)
+                    .animation(.easeInOut, value: isItOkayToChangeDate())
 
                 Spacer()
 
@@ -102,7 +79,9 @@ struct PieceSheet: View {
                         }
                     }
                     // Require a category to save changes.
-                    .disabled(text.isEmpty || !isItOkayToChangeDate)
+                    .disabled(
+                        shouldDisableDoneButton()
+                    )
                 }
 
                 ToolbarItem(placement: .cancellationAction) {
@@ -187,6 +166,45 @@ extension PieceSheet {
             // 조각 정보 추가
             let newPiece = PieceData(text: text, date: selectedDate)
             fruitData.pieces.append(newPiece)
+        }
+    }
+    
+    /// 완료 버튼 disabled여부
+    private func shouldDisableDoneButton() -> Bool {
+        guard let piece = piece else {
+            // 새로 생성하는 경우
+            return text.isEmpty
+        }
+        
+        // 수정하는 경우
+        let isTextUnchanged = piece.text == text
+        let isDateUnchanged = piece.date == selectedDate
+        
+        return text.isEmpty ||
+        (isTextUnchanged && isDateUnchanged) ||
+        !isItOkayToChangeDate()
+    }
+    
+    /// 수정할 수 있는 날짜인지 확인하고 경고 메시지 띄워주기
+    /// - piece 배열에 저장되어 있는 날짜 중에 동일한 날짜가 있으면 수정 불가능한 날짜
+    private func isItOkayToChangeDate() -> Bool {
+        // 수정모드
+        if let piece {
+            // 기존 날짜랑 같은 날짜면 오케이
+            if DateUtils.isSameDay(date1: piece.date, date2: selectedDate) {
+                return true
+            }
+            // 다른 날짜면 조각 배열에 이미 등록된 날짜 있는지 체크
+            else {
+                let hasPieceOnSameDay = DateUtils.hasPiece(on: selectedDate, in: fruitData.pieces)
+                return !hasPieceOnSameDay
+            }
+        }
+        // 생성모드
+        else {
+            // 조각 배열에 이미 등록된 날짜 있는지 체크
+            let hasPieceOnSameDay = DateUtils.hasPiece(on: selectedDate, in: fruitData.pieces)
+            return !hasPieceOnSameDay
         }
     }
 }

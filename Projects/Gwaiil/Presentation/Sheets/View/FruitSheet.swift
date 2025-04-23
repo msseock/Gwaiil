@@ -69,7 +69,7 @@ struct FruitSheet: View {
                     }
                 }
                 
-                // 
+                // 과일 3종 세트 이미지 보여주는 곳
                 SelectedFruitSetCard(colorType: selectedColorType)
                     .animation(.bouncy, value: selectedColorType)
                 
@@ -95,10 +95,7 @@ struct FruitSheet: View {
                     }
                     // 완료버튼 비활성화 조건
                     .disabled(
-                        // 수정 생성 구분
-                        fruit?.name == nil
-                        ? name.isEmpty // 생성 시 이름 텍스트 비어있으면 비활성화
-                        : (fruit?.name == self.name) || name.isEmpty // 수정 시 변경사항 없어도 비활성화
+                        shouldDisableDoneButton()
                     )
                 }
                 
@@ -160,6 +157,18 @@ extension FruitSheet {
             let newFruit = FruitData(name: name, colorType: selectedColorType)
             context.insert(newFruit)
         }
+    }
+    
+    /// 완료 버튼 disabled 여부
+    private func shouldDisableDoneButton() -> Bool {
+        guard let fruit = fruit else {
+            // 새로 생성하는 경우
+            return name.isEmpty
+        }
+        // 수정하는 경우
+        let isNameUnchanged = fruit.name == name
+        let isColorUnchanged = fruit.colorType == selectedColorType
+        return (isNameUnchanged && isColorUnchanged) || name.isEmpty
     }
 }
 
