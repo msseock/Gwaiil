@@ -9,7 +9,7 @@ import SwiftUI
 
 /// 7개 과일을 한 줄에 배치하고 다음 줄로 넘어가는 레이아웃
 struct WrapLayout: Layout {
-    var alignment: Alignment = .center
+    var alignment: Alignment = .leading
     var itemsPerRow: Int = 7
 
     /// 레이아웃 전체 크기(너비, 높이) 정해주기

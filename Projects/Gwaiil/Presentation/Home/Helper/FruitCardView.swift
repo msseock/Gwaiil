@@ -255,15 +255,3 @@ extension FruitCardView {
         .padding(.horizontal, 16)
     }
 }
-
-
-#Preview {
-    Home()
-}
-
-
-struct Home_Previews: PreviewProvider {
-    static var previews: some View {
-        Home()
-    }
-}

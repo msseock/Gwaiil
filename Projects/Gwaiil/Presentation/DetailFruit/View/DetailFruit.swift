@@ -45,13 +45,17 @@ struct DetailFruit: View {
     var body: some View {
         VStack(spacing: 20) {
             if let fruit = fruitData.first {
-                // 과일 제목 섹션
+                // MARK: 과일 제목 섹션
                 Detail_TitleSectionView(fruit: fruit)
                     .padding(.vertical, 20)
                 
-                // 과일 추가하기 버튼
+                // MARK: 과일 추가하기 버튼 섹션
                 if DateUtils.isFinishedFruit(startDate: fruit.startDate) {
                     // 끝난 도전이면 어떤 과일 획득했는지 보여주는 박스
+                    Detail_EarnedFruitBoxView(
+                        pieceCount: fruit.pieces.count,
+                        colorType: fruit.colorType
+                    )
                 } else {
                     // 조각 추가하기 버튼
                     Detail_AddPieceButton(
@@ -63,11 +67,13 @@ struct DetailFruit: View {
                     .disabled(DateUtils.hasPiece(on: Date(), in: fruit.pieces))
                 }
                 
+                // MARK: 과일 조각 모여있는 박스 보여주는 뷰
                 Detail_PiecesBoxView(
                     colorType: fruit.colorType,
                     count: fruit.pieces.count
                 )
                 
+                // MARK: 과일 조각 리스트뷰
                 Detail_PiecesListView(
                     fruitData: fruit,
                     selectedPieceIndex: $selectedPieceIndex,

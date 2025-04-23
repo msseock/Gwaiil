@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftData
+import SwiftUI
 
 /// 목표(과일) 데이터 모델
 @Model
@@ -41,6 +42,18 @@ enum FruitColorType: String, CaseIterable, Codable {
     case yellow = "노랑"
     case green = "초록"
     case red = "빨강"
+    
+    /// 색상별 메인컬러
+    var color: Color {
+        switch self {
+        case .yellow:
+            .yellow100
+        case .green:
+            .green80
+        case .red:
+            .red100
+        }
+    }
 }
 
 /// 과일 9종
@@ -59,6 +72,30 @@ enum FruitType: String, CaseIterable {
     case cherryTomato
     case peach
     case redApple
+    
+    /// 한국이름 + 을/를
+    var koreanNamePlusJosa: String {
+        switch self {
+        case .lemon:
+            "레몬을"
+        case .starfruit:
+            "스타후르츠를"
+        case .pineapple:
+            "파인애플을"
+        case .lime:
+            "라임을"
+        case .greenApple:
+            "청사과를"
+        case .melon:
+            "멜론을"
+        case .cherryTomato:
+            "방울토마토를"
+        case .peach:
+            "납작복숭아를"
+        case .redApple:
+            "사과를"
+        }
+    }
     
     /// 전체과일 이미지
     var fruitImageName: String {

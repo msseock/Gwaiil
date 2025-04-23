@@ -9,8 +9,11 @@ import SwiftUI
 
 /// 리스트 한 줄 컴포넌트 뷰
 struct Detail_PieceListRowView: View {
+    /// 색상타입
     let colorType: FruitColorType
+    /// 조각 데이터
     let piece: PieceData
+    /// 몇번째 과일 데이터인지(과일조각 종류)
     let index: Int
     
     var body: some View {

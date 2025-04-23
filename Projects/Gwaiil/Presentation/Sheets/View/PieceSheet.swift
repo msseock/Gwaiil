@@ -80,6 +80,7 @@ struct PieceSheet: View {
                     .foregroundStyle(Color.red100)
                     .opacity(isItOkayToChangeDate ? 0 : 1)
                     .frame(maxWidth: .infinity, alignment: .trailing)
+                    .animation(.easeInOut, value: isItOkayToChangeDate)
 
                 Spacer()
 
@@ -101,7 +102,7 @@ struct PieceSheet: View {
                         }
                     }
                     // Require a category to save changes.
-                    .disabled(text.isEmpty)
+                    .disabled(text.isEmpty || !isItOkayToChangeDate)
                 }
 
                 ToolbarItem(placement: .cancellationAction) {
@@ -177,6 +178,11 @@ extension PieceSheet {
             // 조각 정보 수정
             piece.text = text
             piece.date = selectedDate
+            
+            print("pieces 배열")
+            for piece in fruitData.pieces {
+                print(piece.date, piece.text)
+            }
         } else {
             // 조각 정보 추가
             let newPiece = PieceData(text: text, date: selectedDate)

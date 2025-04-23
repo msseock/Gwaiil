@@ -69,6 +69,7 @@ struct FruitSheet: View {
                     }
                 }
                 
+                // 
                 SelectedFruitSetCard(colorType: selectedColorType)
                     .animation(.bouncy, value: selectedColorType)
                 
@@ -78,11 +79,13 @@ struct FruitSheet: View {
             .background(Color(.systemGray6).ignoresSafeArea())
             // MARK: 상단바
             .toolbar {
+                // 제목
                 ToolbarItem(placement: .principal) {
                     Text(editorTitle)
                         .fontWeight(.semibold)
                 }
                 
+                // 완료 버튼
                 ToolbarItem(placement: .confirmationAction) {
                     Button("완료") {
                         withAnimation {
@@ -90,10 +93,16 @@ struct FruitSheet: View {
                             dismiss()
                         }
                     }
-                    // Require a category to save changes.
-                    .disabled(name.isEmpty)
+                    // 완료버튼 비활성화 조건
+                    .disabled(
+                        // 수정 생성 구분
+                        fruit?.name == nil
+                        ? name.isEmpty // 생성 시 이름 텍스트 비어있으면 비활성화
+                        : (fruit?.name == self.name) || name.isEmpty // 수정 시 변경사항 없어도 비활성화
+                    )
                 }
                 
+                // 취소 버튼
                 ToolbarItem(placement: .cancellationAction) {
                     Button("취소", role: .cancel) {
                         dismiss()

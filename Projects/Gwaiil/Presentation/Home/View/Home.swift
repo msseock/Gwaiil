@@ -58,14 +58,17 @@ struct Home: View {
                         if !ongoingFruits.isEmpty {
                             FruitCardListView(
                                 isForFinishedFruit: false,
-                                fruitData: ongoingFruits)
+                                fruitData: ongoingFruits
+                            )
                         }
 
                         // 완료한 도전이 있을 때
                         if !finishedFruits.isEmpty {
                             FruitCardListView(
                                 isForFinishedFruit: true,
-                                fruitData: finishedFruits)
+                                fruitData: finishedFruits
+                            )
+                            .padding(.top, 50)
                         }
                     }
                 }
