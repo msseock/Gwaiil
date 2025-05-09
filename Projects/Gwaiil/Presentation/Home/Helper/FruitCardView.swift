@@ -163,7 +163,7 @@ extension FruitCardView {
             } else {
                 Image(
                     FruitType.getPieceByIndexNType(
-                        index: fruitData.pieces.count, type: fruitData.colorType
+                        index: fruitData.pieces.count-1, type: fruitData.colorType
                     ).fruitImageName
                 )
                 .padding(.bottom, 10)

@@ -33,7 +33,7 @@ struct Detail_TitleSectionView: View {
             
             Spacer()
             
-            Image(FruitType.getPieceByIndexNType(index: fruit.pieces.count, type: fruit.colorType).fruitImageName)
+            Image(FruitType.getPieceByIndexNType(index: max(0, fruit.pieces.count-1), type: fruit.colorType).fruitImageName)
         }
     }
 }
