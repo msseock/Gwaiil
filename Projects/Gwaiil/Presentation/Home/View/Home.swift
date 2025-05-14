@@ -62,6 +62,7 @@ struct Home: View {
                                 isForFinishedFruit: false,
                                 fruitData: ongoingFruits
                             )
+                            .padding(.bottom, 50)
                         }
 
                         // 완료한 도전이 있을 때
@@ -70,7 +71,6 @@ struct Home: View {
                                 isForFinishedFruit: true,
                                 fruitData: finishedFruits
                             )
-                            .padding(.top, 50)
                         }
                     }
                 }

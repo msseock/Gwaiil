@@ -9,7 +9,6 @@ import SwiftUI
 import SwiftData
 
 struct DetailFruit: View {
-    // TODO: 과일 리스트 날짜 최신순이 더 위로 오도록 정렬 바꿔야 함
     // MARK: - Properties
     /// 상세 페이지에서 보여줄 데이터
     @Query var fruitData: [FruitData]
