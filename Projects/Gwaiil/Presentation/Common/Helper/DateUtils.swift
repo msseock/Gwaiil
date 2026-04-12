@@ -26,7 +26,7 @@ enum DateUtils {
     static func isFinishedFruit(startDate: Date) -> Bool {
         let start = DateUtils.getDateIntForCalc(startDate)
         let twentyOneDaysAgo = DateUtils.getDateIntForCalc(DateUtils.getTwentyOneDaysAgo())
-        return start <= twentyOneDaysAgo
+        return start < twentyOneDaysAgo
     }
     
     /// 날짜가 같은 날인지 체크
