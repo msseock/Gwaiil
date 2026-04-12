@@ -13,8 +13,6 @@ struct Detail_PiecesListView: View {
     let fruitData: FruitData
     
     // 부모 뷰에게 전달해줄 값들
-    @Binding var selectedPieceIndex: Int?
-    @Binding var showSheet: Bool
     @Binding var sheetToShow: DetailFruitSheetType?
     
     /// 내림차순으로 정렬된 조각데이터
@@ -38,10 +36,7 @@ struct Detail_PiecesListView: View {
                     )
                     .contentShape(Rectangle()) // 전체 영역을 탭 가능하게 함
                     .onTapGesture {
-                        // 조각 수정 sheet 보여줌
-                        selectedPieceIndex = arrayIndex
-                        sheetToShow = .pieceEdit
-                        showSheet.toggle()
+                        sheetToShow = .pieceEdit(arrayIndex)
                     }
                     // 스와이프해서 조각 삭제하기
                     .swipeActions(edge: .trailing) {
@@ -80,8 +75,6 @@ struct Detail_PiecesListView: View {
 #Preview {
     Detail_PiecesListView(
         fruitData: FruitData(name: "이름", colorType: .green),
-        selectedPieceIndex: .constant(5),
-        showSheet: .constant(false),
         sheetToShow: .constant(.fruitEdit)
     )
 }

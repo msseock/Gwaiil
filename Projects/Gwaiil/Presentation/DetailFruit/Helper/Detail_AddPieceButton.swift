@@ -11,7 +11,6 @@ import SwiftUI
 struct Detail_AddPieceButton: View {
     let colorType: FruitColorType
     
-    @Binding var showSheet: Bool
     @Binding var sheetToShow: DetailFruitSheetType?
             
     var buttonBcgColor: Color {
@@ -28,7 +27,6 @@ struct Detail_AddPieceButton: View {
     var body: some View {
         Button {
             sheetToShow = .pieceAdd
-            showSheet.toggle()
         } label: {
             HStack {
                 Image(systemName: "plus.circle.fill")
@@ -48,5 +46,5 @@ struct Detail_AddPieceButton: View {
 }
 
 #Preview {
-    Detail_AddPieceButton(colorType: FruitColorType.green, showSheet: .constant(false), sheetToShow: .constant(.pieceAdd))
+    Detail_AddPieceButton(colorType: FruitColorType.green, sheetToShow: .constant(.pieceAdd))
 }

@@ -19,12 +19,7 @@ struct DetailFruit: View {
     @Environment(\.modelContext) var context
     
     // MARK: sheet & alert용 변수들
-    @State var showSheet: Bool = false
-    
     @State var sheetToShow: DetailFruitSheetType?
-        
-    /// 수정할 조각 index 저장용
-    @State var selectedPieceIndex: Int?
     
     /// 삭제 컨펌 alert 띄우기용
     @State var showDeleteAlert: Bool = false
@@ -59,7 +54,6 @@ struct DetailFruit: View {
                     // 조각 추가하기 버튼
                     Detail_AddPieceButton(
                         colorType: fruit.colorType,
-                        showSheet: $showSheet,
                         sheetToShow: $sheetToShow
                     )
                     .opacity(DateUtils.hasPiece(on: Date(), in: fruit.pieces) ? 0.5 : 1)
@@ -75,8 +69,6 @@ struct DetailFruit: View {
                 // MARK: 과일 조각 리스트뷰
                 Detail_PiecesListView(
                     fruitData: fruit,
-                    selectedPieceIndex: $selectedPieceIndex,
-                    showSheet: $showSheet,
                     sheetToShow: $sheetToShow
                 )
             } else {
@@ -85,23 +77,21 @@ struct DetailFruit: View {
         }
         .padding(.horizontal, 16)
         // MARK: Sheets
-        .sheet(isPresented: $showSheet) {
+        .sheet(item: $sheetToShow) { sheetType in
             // 과일 수정
-            if sheetToShow == .fruitEdit {
+            if sheetType == .fruitEdit {
                 FruitSheet(fruit: fruitData.first)
                     .presentationDetents([.height(500)])
             }
             // 조각 추가
-            else if sheetToShow == .pieceAdd {
+            else if sheetType == .pieceAdd {
                 PieceSheet(pieceIndex: nil, fruitData: fruitData.first!)
                     .presentationDetents([.height(220)])
             }
             // 조각 수정
-            else if sheetToShow == .pieceEdit {
-                if let selectedPieceIndex {
-                    PieceSheet(pieceIndex: selectedPieceIndex, fruitData: fruitData.first!)
-                        .presentationDetents([.height(220)])
-                }
+            else if case .pieceEdit(let index) = sheetType {
+                PieceSheet(pieceIndex: index, fruitData: fruitData.first!)
+                    .presentationDetents([.height(220)])
             }
         }
         // MARK: NavigationBar
@@ -112,9 +102,7 @@ struct DetailFruit: View {
                 Menu {
                     // 과일 수정
                     Button {
-                        // 과일 수정 sheet 띄우기
                         sheetToShow = .fruitEdit
-                        showSheet.toggle()
                     } label: {
                         Label("수정", systemImage: "pencil")
                     }
@@ -149,8 +137,16 @@ struct DetailFruit: View {
     DetailFruit(fruitID: .init())
 }
 
-enum DetailFruitSheetType {
+enum DetailFruitSheetType: Identifiable, Equatable {
     case fruitEdit
     case pieceAdd
-    case pieceEdit
+    case pieceEdit(Int)
+
+    var id: String {
+        switch self {
+        case .fruitEdit: return "fruitEdit"
+        case .pieceAdd: return "pieceAdd"
+        case .pieceEdit(let index): return "pieceEdit_\(index)"
+        }
+    }
 }
